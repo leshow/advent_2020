@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::ops::RangeInclusive;
 
+// part 1
 pub fn compute() -> Result<usize> {
     Ok(include_str!("../input/day2.txt")
         .lines()
@@ -29,6 +30,7 @@ fn contains((range, c, s): &(RangeInclusive<usize>, char, &str)) -> bool {
     range.contains(&count)
 }
 
+// part 2
 pub fn part_two() -> Result<usize> {
     Ok(include_str!("../input/day2.txt")
         .lines()

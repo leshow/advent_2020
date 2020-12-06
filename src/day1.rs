@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 
+// part 1
 pub fn compute() -> Result<usize> {
     let iter = include_str!("../input/day1.txt")
         .lines()
@@ -16,6 +17,7 @@ pub fn compute() -> Result<usize> {
     bail!("failed to find matching result")
 }
 
+// part 2
 pub fn part_two() -> Result<usize> {
     let iter = include_str!("../input/day1.txt")
         .lines()
