@@ -29,45 +29,21 @@ where
     type Error = anyhow::Error;
 
     fn try_from(map: HashMap<&str, V>) -> Result<Self, Self::Error> {
-        let birth_year = map
-            .get("byr")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let issue_year = map
-            .get("iyr")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let exp_year = map
-            .get("eyr")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let height = map
-            .get("hgt")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let hair_color = map
-            .get("hcl")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let eye_color = map
-            .get("ecl")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let pass_id = map
-            .get("pid")
-            .map(|v| v.to_string())
-            .ok_or_else(|| anyhow!("failed"))?;
-        let country_id: Option<String> = map.get("cid").map(|v| v.to_string());
+        let valid = |key| {
+            map.get(key)
+                .map(|v| v.to_string())
+                .ok_or_else(|| anyhow!("failed"))
+        };
 
         Ok(Passport {
-            birth_year,
-            issue_year,
-            exp_year,
-            height,
-            hair_color,
-            eye_color,
-            pass_id,
-            country_id,
+            birth_year: valid("byr")?,
+            issue_year: valid("iyr")?,
+            exp_year: valid("eyr")?,
+            height: valid("hgt")?,
+            hair_color: valid("hcl")?,
+            eye_color: valid("ecl")?,
+            pass_id: valid("pid")?,
+            country_id: valid("cid").ok(),
         })
     }
 }
