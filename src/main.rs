@@ -9,5 +9,5 @@ fn main() {
     // println!("{}", day1::part_two().unwrap());
     // println!("{}", day2::part_two().unwrap());
     // println!("{}", day3::part_two().unwrap());
-    println!("{}", day4::compute().unwrap());
+    println!("{}", day4::part_two());
 }
