@@ -16,6 +16,7 @@ pub fn compute() -> usize {
         .sum()
 }
 
+// part 2
 pub fn part_two() -> usize {
     include_str!("../input/day6.txt")
         .split("\n\n")
