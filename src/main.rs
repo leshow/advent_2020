@@ -2,6 +2,7 @@
 
 mod day1;
 mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -21,5 +22,6 @@ fn main() {
     // day7::compute();
     // println!("{}", day8::part_two());
     // println!("{:?}", day9::part_two_fast());
-    println!("{:?}", day10::part_two_naive());
+    // println!("{:?}", day10::part_two_naive());
+    println!("{:?}", day11::compute());
 }
