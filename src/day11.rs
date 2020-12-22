@@ -33,11 +33,26 @@ pub fn compute() -> Option<usize> {
         .map(|line| line.bytes().map(Seat::from).collect())
         .collect::<Vec<Vec<Seat>>>();
 
-    Sim { board }.run()
+    Sim { board }.run(Strategy::Adj)
+}
+
+pub fn part_two() -> Option<usize> {
+    let mut board = include_str!("../input/day11.txt")
+        .lines()
+        .map(|line| line.bytes().map(Seat::from).collect())
+        .collect::<Vec<Vec<Seat>>>();
+
+    Sim { board }.run(Strategy::FurthestAdj)
 }
 
 struct Sim {
     board: Vec<Vec<Seat>>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Strategy {
+    Adj,
+    FurthestAdj,
 }
 
 impl Sim {
@@ -45,14 +60,14 @@ impl Sim {
         Self { board }
     }
 
-    fn run(&mut self) -> Option<usize> {
-        while self.step()? {
+    fn run(&mut self, strategy: Strategy) -> Option<usize> {
+        while self.step(strategy)? {
             // println!("{:#?}", self.board);
         }
         Some(self.count_occupied())
     }
 
-    fn step(&mut self) -> Option<bool> {
+    fn step(&mut self, strategy: Strategy) -> Option<bool> {
         let rows = self.board.len();
         let cols = self.board.first()?.len();
         let mut new_board = self.board.clone();
@@ -60,20 +75,41 @@ impl Sim {
 
         for y in 0..rows {
             for x in 0..cols {
-                let occupied = self
-                    .get_adj(x, y)
-                    .filter(|&seat| seat == Seat::Occupied)
-                    .count();
-                match new_board[y][x] {
-                    Seat::Empty if occupied == 0 => {
-                        new_board[y][x] = Seat::Occupied;
-                        changed = true;
+                match strategy {
+                    Strategy::Adj => {
+                        let occupied = self
+                            .get_adj(x, y)
+                            .filter(|&seat| seat == Seat::Occupied)
+                            .count();
+                        match new_board[y][x] {
+                            Seat::Empty if occupied == 0 => {
+                                new_board[y][x] = Seat::Occupied;
+                                changed = true;
+                            }
+                            Seat::Occupied if occupied >= 4 => {
+                                new_board[y][x] = Seat::Empty;
+                                changed = true;
+                            }
+                            _ => {}
+                        }
                     }
-                    Seat::Occupied if occupied >= 4 => {
-                        new_board[y][x] = Seat::Empty;
-                        changed = true;
+                    Strategy::FurthestAdj => {
+                        let occupied = self
+                            .get_furthest_adj(x, y)
+                            .filter(|&seat| seat == Seat::Occupied)
+                            .count();
+                        match new_board[y][x] {
+                            Seat::Empty if occupied == 0 => {
+                                new_board[y][x] = Seat::Occupied;
+                                changed = true;
+                            }
+                            Seat::Occupied if occupied >= 5 => {
+                                new_board[y][x] = Seat::Empty;
+                                changed = true;
+                            }
+                            _ => {}
+                        }
                     }
-                    _ => {}
                 }
             }
         }
@@ -94,6 +130,22 @@ impl Sim {
                     .count()
             })
             .sum()
+    }
+
+    fn get_furthest_adj(&self, x: usize, y: usize) -> impl Iterator<Item = Seat> + '_ {
+        DIRS.iter().filter_map(move |(dx, dy)| {
+            (1..)
+                .map(|distance| {
+                    Some(
+                        *self
+                            .board
+                            .get(((y as isize) + dy * distance) as usize)?
+                            .get(((x as isize) + dx * distance) as usize)?,
+                    )
+                })
+                .find(|&place| place != Some(Seat::Floor))
+                .flatten()
+        })
     }
 
     fn get_adj(&self, x: usize, y: usize) -> impl Iterator<Item = Seat> + '_ {
