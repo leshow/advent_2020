@@ -77,24 +77,22 @@ impl Pos {
     fn change(&mut self, dir: Dir) -> &mut Self {
         match dir {
             Dir::Heading((head, dist)) => match head {
-                Heading::East => self.x += dist,
-                Heading::West => self.x -= dist,
-                Heading::South => self.y -= dist,
-                Heading::North => self.y += dist,
+                East => self.x += dist,
+                West => self.x -= dist,
+                South => self.y -= dist,
+                North => self.y += dist,
             },
             Dir::F(dist) => match self.head {
-                Heading::East => self.x += dist,
-                Heading::West => self.x -= dist,
-                Heading::South => self.y -= dist,
-                Heading::North => self.y += dist,
+                East => self.x += dist,
+                West => self.x -= dist,
+                South => self.y -= dist,
+                North => self.y += dist,
             },
             Dir::L(angle) => {
-                let new_angle = (isize::from(self.head) + 360 - angle) % 360;
-                self.head = new_angle.into();
+                self.head = ((isize::from(self.head) + 360 - angle) % 360).into();
             }
             Dir::R(angle) => {
-                let new_angle = (isize::from(self.head) + angle) % 360;
-                self.head = new_angle.into();
+                self.head = ((isize::from(self.head) + angle) % 360).into();
             }
         }
         self
