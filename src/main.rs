@@ -17,5 +17,5 @@ mod day8;
 mod day9;
 
 fn main() {
-    println!("{:?}", day15::part_one());
+    println!("{:?}", day15::part_two());
 }
